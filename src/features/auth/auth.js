@@ -1,4 +1,6 @@
 import { redirect } from "react-router";
+import { registerSchema, loginSchema } from "./schema";
+import { toFieldErrors } from "../../utils/formErrors";
 
 const USERS_KEY = "demo_users";
 const SESSION_KEY = "demo_session";
@@ -31,28 +33,7 @@ export function getUsername(email) {
   return name.charAt(0).toUpperCase() + name.slice(1);
 }
 
-function validateCredentials(email, password) {
-  const errors = {};
-
-  if (!email) {
-    errors.email = "Please enter your email.";
-  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    errors.email = "Please enter a valid email address.";
-  }
-
-  if (!password) {
-    errors.password = "Please enter your password.";
-  } else if (password.length < 6) {
-    errors.password = "Password must be at least 6 characters.";
-  }
-
-  return errors;
-}
-
 export function registerUser(email, password) {
-  const errors = validateCredentials(email, password);
-  if (Object.keys(errors).length > 0) return { errors };
-
   const users = getUsers();
   if (users.some((user) => user.email === email)) {
     return { errors: { email: "This email is already registered. Try logging in." } };
@@ -64,11 +45,6 @@ export function registerUser(email, password) {
 }
 
 export function loginUser(email, password) {
-  const errors = {};
-  if (!email) errors.email = "Please enter your email.";
-  if (!password) errors.password = "Please enter your password.";
-  if (Object.keys(errors).length > 0) return { errors };
-
   const user = getUsers().find((u) => u.email === email && u.password === password);
   if (!user) return { errors: { form: "Incorrect email or password." } };
 
@@ -84,7 +60,7 @@ export function logoutUser() {
 async function readCredentials(request) {
   const formData = await request.formData();
   return {
-    email: String(formData.get("email") ?? "").trim().toLowerCase(),
+    email: String(formData.get("email") ?? ""),
     password: String(formData.get("password") ?? ""),
   };
 }
@@ -110,14 +86,18 @@ export function logoutLoader() {
 
 
 export async function registerAction({ request }) {
-  const { email, password } = await readCredentials(request);
-  const result = registerUser(email, password);
+  const parsed = registerSchema.safeParse(await readCredentials(request));
+  if (!parsed.success) return { errors: toFieldErrors(parsed.error) };
+
+  const result = registerUser(parsed.data.email, parsed.data.password);
   return result.errors ? result : redirect("/");
 }
 
 export async function loginAction({ request }) {
-  const { email, password } = await readCredentials(request);
-  const result = loginUser(email, password);
+  const parsed = loginSchema.safeParse(await readCredentials(request));
+  if (!parsed.success) return { errors: toFieldErrors(parsed.error) };
+
+  const result = loginUser(parsed.data.email, parsed.data.password);
   return result.errors ? result : redirect("/");
 }
 
