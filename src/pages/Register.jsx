@@ -33,7 +33,11 @@ export default function Register() {
       <h1 className="mb-6 text-center text-2xl font-semibold text-gray-800">
         Create an account
       </h1>
-
+{serverErrors.form && (
+  <p className="mb-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+    {serverErrors.form}
+  </p>
+)}
       <Form method="post" noValidate onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
           <label htmlFor="email" className="mb-1 block text-sm font-medium text-gray-700">
