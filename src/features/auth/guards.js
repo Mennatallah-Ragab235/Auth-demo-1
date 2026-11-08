@@ -3,6 +3,13 @@ import { getCurrentUser, signOut } from "./authService";
 import { getMyProfile } from "../profile/profileService";
 import { isProfileComplete } from "../profile/completion";
 
+
+export async function requireAdmin() {
+  const ctx = await requireCompleteProfile();
+  if (ctx.profile.role !== "Admin") throw redirect("/");
+  return ctx;
+}
+
 export async function requireCompleteProfile() {
   const ctx = await requireProfile();
   if (!isProfileComplete(ctx.profile)) throw redirect("/profile");

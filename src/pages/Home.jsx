@@ -13,6 +13,12 @@ export default function Home() {
           <Link to="/profile" className="font-medium text-blue-600 hover:underline">
             My profile
           </Link>
+
+          {role === "Admin" && (
+  <Link to="/admin" className="font-medium text-blue-600 hover:underline">
+    Admin area
+  </Link>
+)}
           <Form method="post" action="/logout">
             <button
               type="submit"
