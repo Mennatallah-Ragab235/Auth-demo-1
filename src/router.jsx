@@ -12,6 +12,8 @@ import {
   logoutLoader,
   logoutAction,
 } from "./features/auth/auth"; 
+import Profile from "./pages/Profile";
+import { profileLoader, profileAction } from "./features/profile/profile";
 
 const router = createBrowserRouter([
   {
@@ -43,5 +45,6 @@ const router = createBrowserRouter([
     loader: logoutLoader,
     action: logoutAction,
   },
+  { path: "/profile", element: <Profile />, loader: profileLoader, action: profileAction },
 ]);
 export default router;
