@@ -1,7 +1,13 @@
+import { redirect } from "react-router";
 import { requireProfile } from "../auth/guards";
 import { individualProfileSchema, companyProfileSchema } from "./schema";
 import { toFieldErrors } from "../../utils/formErrors";
-import { saveIndividualProfile, saveCompanyProfile } from "./profileService";
+import {
+  getMyProfile,
+  saveIndividualProfile,
+  saveCompanyProfile,
+} from "./profileService";
+import { isProfileComplete } from "./completion";
 
 const toNumber = (value) =>
   value === null || String(value).trim() === "" ? NaN : Number(value);
@@ -40,6 +46,9 @@ export async function profileAction({ request }) {
   } else {
     throw new Response("Bad request", { status: 400 });
   }
+
+  const updated = await getMyProfile(user.id);
+  if (!isProfileComplete(profile) && isProfileComplete(updated)) return redirect("/");
 
   return { intent, success: true };
 }

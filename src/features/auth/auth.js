@@ -2,6 +2,7 @@ import { redirect } from "react-router";
 import { registerSchema, loginSchema } from "./schema";
 import { toFieldErrors } from "../../utils/formErrors";
 import { signUp, signIn, signOut, getCurrentUser } from "./authService";
+import { requireCompleteProfile } from "./guards";
 
 export function getUsername(email) {
   const name = email.split("@")[0];
@@ -17,9 +18,8 @@ async function readCredentials(request) {
 }
 
 export async function homeLoader() {
-  const user = await getCurrentUser();
-  if (!user) return redirect("/login");
-  return { username: getUsername(user.email) };
+  const { profile } = await requireCompleteProfile();
+  return { username: getUsername(profile.email), role: profile.role };
 }
 
 export async function loginLoader() {
