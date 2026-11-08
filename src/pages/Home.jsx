@@ -1,7 +1,8 @@
 import { Form, useLoaderData } from "react-router";
 
 export default function Home() {
-const { username } = useLoaderData() as { username: string };
+  const { username } = useLoaderData();
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
       <div className="w-full max-w-sm rounded-xl bg-white p-8 text-center shadow-md">
