@@ -22,3 +22,13 @@ export async function fetchPost(id) {
 export async function fetchComments(id) {
   return (await getJSON(`${BASE}/posts/${id}/comments`)).json();
 }
+
+export async function createPost(data) {
+  const res = await fetch(`${BASE}/posts`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ ...data, userId: 1 }),
+  });
+  if (!res.ok) throw new Error("Could not create post");
+  return res.json();
+}
