@@ -130,25 +130,38 @@ export default function Posts() {
           ))}
         </ul>
 
-        <div className="flex items-center justify-between">
+              <nav aria-label="Pagination" className="flex flex-wrap items-center justify-center gap-2">
           <button
             disabled={page <= 1}
             onClick={() => setSearchParams({ page: String(page - 1) })}
-            className="rounded-lg bg-gray-800 px-4 py-2 text-white disabled:opacity-40"
+            className="rounded-lg bg-gray-800 px-3 py-2 text-white disabled:opacity-40"
           >
             Previous
           </button>
-          <span className="text-sm text-gray-600">
-            Page {page} of {totalPages}
-          </span>
+
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => (
+            <button
+              key={n}
+              onClick={() => setSearchParams({ page: String(n) })}
+              aria-current={n === page ? "page" : undefined}
+              className={`h-10 w-10 rounded-lg text-sm font-medium transition ${
+                n === page
+                  ? "bg-blue-600 text-white"
+                  : "bg-white text-gray-700 shadow-sm hover:bg-gray-100"
+              }`}
+            >
+              {n}
+            </button>
+          ))}
+
           <button
             disabled={page >= totalPages}
             onClick={() => setSearchParams({ page: String(page + 1) })}
-            className="rounded-lg bg-gray-800 px-4 py-2 text-white disabled:opacity-40"
+            className="rounded-lg bg-gray-800 px-3 py-2 text-white disabled:opacity-40"
           >
             Next
           </button>
-        </div>
+        </nav>
       </div>
     </div>
   );
