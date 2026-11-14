@@ -2,19 +2,17 @@ import { redirect } from "react-router";
 import { requireProfile } from "../auth/guards";
 import { individualProfileSchema, companyProfileSchema } from "./schema";
 import { toFieldErrors } from "../../utils/formErrors";
-import {
-  getMyProfile,
-  saveIndividualProfile,
-  saveCompanyProfile,
-} from "./profileService";
+import { saveIndividualProfile, saveCompanyProfile } from "./profileService";
 import { isProfileComplete } from "./completion";
+import { queryClient } from "../../lib/queryClient";
+import { profileQuery } from "./queries";
 
 const toNumber = (value) =>
   value === null || String(value).trim() === "" ? NaN : Number(value);
 
 export async function profileLoader() {
-  const { profile } = await requireProfile();
-  return { profile };
+  const { user } = await requireProfile();
+  return { userId: user.id };
 }
 
 export async function profileAction({ request }) {
@@ -47,7 +45,7 @@ export async function profileAction({ request }) {
     throw new Response("Bad request", { status: 400 });
   }
 
-  const updated = await getMyProfile(user.id);
+  const updated = await queryClient.fetchQuery({ ...profileQuery(user.id), staleTime: 0 });
   if (!isProfileComplete(profile) && isProfileComplete(updated)) return redirect("/");
 
   return { intent, success: true };

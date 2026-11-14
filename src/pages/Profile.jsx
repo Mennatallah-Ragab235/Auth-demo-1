@@ -1,9 +1,13 @@
 import { Form, useActionData, useLoaderData } from "react-router";
 import IndividualProfileForm from "../features/profile/components/IndividualProfileForm";
 import CompanyProfileForm from "../features/profile/components/CompanyProfileForm";
+import { useQuery } from "@tanstack/react-query";
+import { profileQuery } from "../features/profile/queries";
+
 
 export default function Profile() {
-  const { profile } = useLoaderData();
+const { userId } = useLoaderData();
+const { data: profile } = useQuery(profileQuery(userId));
   const result = useActionData();
   const isAdmin = profile.role === "Admin";
 
