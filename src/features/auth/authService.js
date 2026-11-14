@@ -1,4 +1,5 @@
 import { supabase } from "../../lib/supabase";
+import { queryClient } from "../../lib/queryClient";
 
 export async function signUp(email, password) {
   const { data, error } = await supabase.auth.signUp({ email, password });
@@ -17,6 +18,7 @@ export async function signIn(email, password) {
 
 export async function signOut() {
   const { error } = await supabase.auth.signOut();
+  queryClient.clear(); 
   return { error };
 }
 
