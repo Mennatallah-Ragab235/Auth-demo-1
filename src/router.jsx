@@ -17,6 +17,9 @@ import {
 } from "./features/auth/auth";
 import { profileLoader, profileAction } from "./features/profile/profile";
 import { adminLoader } from "./features/admin/admin";
+import Posts from "./pages/Posts";
+import PostDetails from "./pages/PostDetails";
+import { postsLoader, postLoader } from "./features/posts/posts";
 
 const router = createBrowserRouter([
   {
@@ -32,6 +35,8 @@ const router = createBrowserRouter([
       { path: "/", element: <Home />, loader: homeLoader },
       { path: "/profile", element: <Profile />, loader: profileLoader, action: profileAction },
       { path: "/admin", element: <Admin />, loader: adminLoader },
+      { path: "/posts", element: <Posts />, loader: postsLoader },
+      { path: "/posts/:postId", element: <PostDetails />, loader: postLoader },
       { path: "/logout", loader: logoutLoader, action: logoutAction },
     ],
   },
